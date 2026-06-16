@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>초·중·고 종강시험 & 비유 퀴즈</title>
+<style>html{zoom:1.25;}</style>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f4ef;--surface:#fff;--accent:#2d6a4f;--accent-light:#e8f5ee;--accent-dark:#1b4332;--warn:#b5451b;--warn-light:#fdf0eb;--gold:#c9a84c;--text:#1a1a1a;--text-muted:#6b6b6b;--border:#ddd8cf;--radius:12px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:1.5rem 1rem 4rem;}
+.page{max-width:720px;margin:0 auto;}
+/* Lock */
+.lock-screen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;padding:2rem;}
+.lock-screen h2{font-family:'Noto Serif KR',serif;font-size:22px;color:var(--accent-dark);margin-bottom:6px;}
+.lock-screen p{font-size:13px;color:var(--text-muted);margin-bottom:1.5rem;}
+.lock-input{font-family:'Noto Sans KR',sans-serif;font-size:16px;padding:10px 16px;border:1px solid var(--border);border-radius:8px;width:220px;text-align:center;margin-bottom:8px;}
+.lock-input:focus{outline:none;border-color:var(--accent);}
+.lock-error{font-size:12px;color:var(--warn);height:16px;margin-bottom:8px;}
+/* Header */
+.site-header{text-align:center;margin-bottom:1.5rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border);}
+.eyebrow{font-size:11px;letter-spacing:.15em;color:var(--gold);margin-bottom:6px;}
+.site-header h1{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:600;}
+.slogan{font-size:12px;font-weight:700;color:var(--warn);margin-top:.4rem;}
+/* Name bar */
+.name-bar{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-bottom:1rem;}
+.name-input{font-family:'Noto Sans KR',sans-serif;font-size:13px;padding:5px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);width:110px;}
+.name-input:focus{outline:none;border-color:var(--accent);}
+.perfect-count{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:700;color:var(--accent-dark);background:var(--accent-light);border:1px solid #95d5b2;border-radius:8px;padding:5px 10px;white-space:nowrap;}
+/* Main tabs */
+.main-tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1.25rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:4px;}
+.main-tab{flex:1;min-width:80px;padding:7px 4px;border:none;background:transparent;border-radius:8px;font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:500;color:var(--text-muted);cursor:pointer;transition:background .15s;touch-action:manipulation;}
+.main-tab.active{background:var(--accent);color:#fff;}
+/* Mode bar */
+.mode-bar{display:flex;gap:4px;margin-bottom:1rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:4px;}
+.mode-btn{flex:1;padding:8px;border:none;background:transparent;border-radius:8px;font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:500;color:var(--text-muted);cursor:pointer;transition:background .15s;touch-action:manipulation;}
+.mode-btn.active{background:var(--accent);color:#fff;}
+/* Options */
+.options-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:1rem;font-size:13px;}
+.options-bar label{display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--text-muted);}
+.options-bar input[type=checkbox]{accent-color:var(--accent);width:15px;height:15px;}
+.reset-btns{display:flex;gap:6px;margin-left:auto;}
+/* Progress */
+.progress-row{display:flex;align-items:center;gap:10px;margin-bottom:1rem;}
+.prog-track{flex:1;height:4px;background:var(--border);border-radius:99px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .4s;}
+.prog-label{font-size:13px;color:var(--text-muted);white-space:nowrap;}
+.score-pill{font-size:12px;padding:3px 10px;border-radius:99px;white-space:nowrap;}
+.pill-trace{background:#f0f0ff;color:#3333aa;}
+.pill-study{background:var(--accent-light);color:var(--accent-dark);}
+.pill-exam{background:#fff3cd;color:#7a5800;}
+/* Jump dots */
+.q-jump{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1rem;}
+.q-dot{height:26px;padding:0 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);font-size:11px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;white-space:nowrap;touch-action:manipulation;}
+.q-dot.done-correct{background:var(--accent);color:#fff;border-color:var(--accent);}
+.q-dot.done-wrong{background:#f4a58a;color:#7a1f00;border-color:#f4a58a;}
+.q-dot.done-exam{background:#ccc;color:#555;border-color:#ccc;}
+.q-dot.current{border-color:var(--accent);border-width:2px;font-weight:700;}
+/* Card */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;}
+.q-num{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--gold);display:block;margin-bottom:4px;}
+.q-text{font-size:15px;line-height:1.85;color:var(--text);margin-bottom:1.25rem;}
+/* Sub-section banner */
+.sub-banner{background:#f0efea;border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:6px 12px;margin-bottom:10px;margin-top:14px;font-size:12px;font-weight:700;color:var(--text-muted);}
+.sub-banner:first-child{margin-top:0;}
+/* Sub question */
+.sub-q{margin-bottom:1rem;}
+.sub-q:last-child{margin-bottom:0;}
+.sub-label{font-size:13px;color:var(--text-muted);margin-bottom:5px;}
+/* Trace answer display */
+.trace-ans{font-size:13px;line-height:1.75;padding:8px 12px;background:#f0f8f4;border-radius:6px;border:1px solid #c5e8d8;color:var(--accent-dark);margin-bottom:6px;user-select:none;}
+textarea{width:100%;font-family:'Noto Sans KR',sans-serif;font-size:14px;line-height:1.75;padding:9px 13px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);resize:vertical;min-height:48px;transition:border-color .2s;}
+textarea:focus{outline:none;border-color:var(--accent);}
+/* Buttons */
+.btn-row{display:flex;gap:7px;margin-top:8px;flex-wrap:wrap;}
+button{font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:500;padding:7px 15px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;transition:background .15s;touch-action:manipulation;}
+button:hover{background:var(--bg);}
+button.primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+button.primary:hover{background:var(--accent-dark);}
+button.danger{background:var(--warn-light);color:var(--warn);border-color:#f4a58a;}
+button.sm{font-size:12px;padding:5px 11px;}
+/* Feedback */
+.feedback{border-radius:8px;padding:9px 13px;font-size:13px;line-height:1.65;margin-top:7px;}
+.feedback.correct{background:var(--accent-light);color:var(--accent-dark);border:1px solid #95d5b2;}
+.feedback.wrong{background:var(--warn-light);color:var(--warn);border:1px solid #f4a58a;}
+.answer-box{margin-top:7px;padding:9px 13px;background:#f9f8f5;border-left:3px solid var(--accent);border-radius:0 8px 8px 0;font-size:13px;line-height:1.75;}
+.answer-box strong{color:var(--accent-dark);}
+.diff-ok{color:var(--accent);}
+.diff-bad{color:var(--warn);text-decoration:underline;}
+.diff-box{display:inline-block;color:#e53935;border:1.5px solid #e53935;border-radius:3px;padding:0 1px;background:rgba(229,57,53,.06);}
+.space-correction{display:inline-block;color:#e53935;font-size:.65em;font-weight:900;vertical-align:super;font-family:serif;}
+/* Nav */
+.nav-row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:.5rem;}
+.nav-right{display:flex;gap:8px;margin-left:auto;}
+/* Score */
+.score-screen{padding:2rem 0;text-align:center;}
+.score-circle{width:110px;height:110px;border-radius:50%;border:3px solid var(--accent);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 1rem;}
+.score-num{font-family:'Noto Serif KR',serif;font-size:34px;font-weight:600;color:var(--accent);line-height:1;}
+.score-sub{font-size:12px;color:var(--text-muted);margin-top:4px;}
+.score-msg{font-size:15px;color:var(--text-muted);margin-bottom:1.5rem;}
+.stat-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem;}
+.stat-chip{font-size:12px;padding:3px 12px;border-radius:99px;border:1px solid var(--border);}
+.score-btn-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem;}
+.wrong-list{text-align:left;margin-top:1rem;}
+.wrong-list-title{font-size:13px;color:var(--text-muted);padding-bottom:6px;border-bottom:1px solid var(--border);margin-bottom:10px;}
+.wrong-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:11px 13px;margin-bottom:8px;font-size:13px;line-height:1.75;}
+.wrong-item .wq{color:var(--text-muted);font-size:12px;margin-bottom:3px;}
+.wrong-item .wa{color:var(--accent-dark);font-weight:500;}
+/* Wrong note */
+.empty-note{text-align:center;padding:3rem 1rem;color:var(--text-muted);font-size:14px;}
+/* Ceremony */
+#confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;}
+.perfect-overlay{position:fixed;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;z-index:10000;pointer-events:none;}
+.perfect-badge{background:linear-gradient(135deg,#2d6a4f,#52b788);color:#fff;border-radius:24px;padding:2rem 3rem;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.25);animation:popIn .5s cubic-bezier(.175,.885,.32,1.275) forwards;}
+@keyframes popIn{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
+.perfect-badge .trophy{font-size:56px;display:block;margin-bottom:8px;}
+.perfect-badge .pt{font-family:'Noto Serif KR',serif;font-size:26px;font-weight:600;margin-bottom:4px;}
+.perfect-badge .ps{font-size:13px;opacity:.85;}
+.footer-stamp{position:fixed;bottom:12px;right:14px;font-size:10px;color:var(--text-muted);pointer-events:none;opacity:.7;}
+</style>
+</head>
+<body>
+
+<div class="lock-screen" id="lock-screen">
+  <h2>🔒 시험 퀴즈</h2>
+  <p>비밀번호를 입력하세요</p>
+  <input class="lock-input" id="lock-input" type="password" placeholder="비밀번호" onkeydown="if(event.key==='Enter')checkPwd()">
+  <div class="lock-error" id="lock-error"></div>
+  <button class="primary" onclick="checkPwd()">확인</button>
+</div>
+
+<canvas id="confetti-canvas" style="display:none"></canvas>
+<div id="perfect-overlay" style="display:none" class="perfect-overlay">
+  <div class="perfect-badge">
+    <span class="trophy">🏆</span>
+    <div class="pt">완벽합니다!</div>
+    <div class="ps">필승! 강력하고 확실하게 승리하자!!</div>
+  </div>
+</div>
+
+<div class="page" id="main-page" style="display:none">
+  <header class="site-header">
+    <div class="eyebrow">빌립지파 총회 글로벌 사명자 교육</div>
+    <h1>초·중·고 종강시험 & 비유 퀴즈</h1>
+    <div class="slogan">✦ 필승! 강력하고 확실하게 승리하자!! ✦</div>
+  </header>
+
+  <div class="name-bar">
+    <input class="name-input" id="user-name" type="text" placeholder="이름 입력" maxlength="10" oninput="saveName()">
+    <div class="perfect-count">🏆 <span id="perfect-count-num">0</span>회 <span style="cursor:pointer;margin-left:4px;font-size:11px;opacity:.6" onclick="resetPerfectCount()" title="초기화">✕</span></div>
+  </div>
+
+  <!-- 메인 탭 -->
+  <div class="main-tabs">
+    <button class="main-tab active" onclick="switchMain('elem-exam')">📝 초등 시험</button>
+    <button class="main-tab" onclick="switchMain('mid-exam')">📝 중등 시험</button>
+    <button class="main-tab" onclick="switchMain('elem-toc')">📚 초등 목차</button>
+    <button class="main-tab" onclick="switchMain('mid-toc')">📚 중등 목차</button>
+    <button class="main-tab" onclick="switchMain('high-toc')">📚 고등 목차</button>
+    <button class="main-tab" onclick="switchMain('parable')">🌿 비유 퀴즈</button>
+    <button class="main-tab" onclick="switchMain('wrong-note')">📒 오답 노트</button>
+  </div>
+
+  <div id="section-elem-exam"><div id="area-elem-exam"></div></div>
+  <div id="section-mid-exam" style="display:none"><div id="area-mid-exam"></div></div>
+  <div id="section-elem-toc" style="display:none"><div id="area-elem-toc"></div></div>
+  <div id="section-mid-toc" style="display:none"><div id="area-mid-toc"></div></div>
+  <div id="section-high-toc" style="display:none"><div id="area-high-toc"></div></div>
+  <div id="section-parable" style="display:none"><div id="area-parable"></div></div>
+  <div id="section-wrong-note" style="display:none"><div id="area-wrong-note"></div></div>
+
+</div>
+
+<script>
+// ── 비밀번호 ──
+// SHA-256 해시 함수
+async function sha256(message){
+  const msgBuffer=new TextEncoder().encode(message);
+  const hashBuffer=await crypto.subtle.digest('SHA-256',msgBuffer);
+  const hashArray=Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// 저장된 비밀번호 해시 (chdrmftk!@의 SHA-256)
+const PWD_HASH='25aaa5df04332f99d5ff9dffea1ec3b01f2d373ee17ad87bff0ceb4489eeb669';
+
+// 실패 횟수 추적
+let failCount=0, lockUntil=0;
+
+async function checkPwd(){
+  // 잠금 확인
+  if(Date.now()<lockUntil){
+    const sec=Math.ceil((lockUntil-Date.now())/1000);
+    document.getElementById('lock-error').textContent=`${sec}초 후 다시 시도하세요.`;
+    return;
+  }
+  const val=document.getElementById('lock-input').value;
+  const hash=await sha256(val);
+  if(hash===PWD_HASH){
+    document.getElementById('lock-screen').style.display='none';
+    document.getElementById('main-page').style.display='block';
+    loadUserData();
+    initAll();
+  } else {
+    failCount++;
+    if(failCount>=5){
+      lockUntil=Date.now()+60000;
+      failCount=0;
+      document.getElementById('lock-error').textContent='5회 실패. 1분 후 다시 시도하세요.';
+    } else {
+      document.getElementById('lock-error').textContent=`비밀번호가 틀렸습니다. (${failCount}/5)`;
+    }
+    document.getElementById('lock-input').value='';
+  }
+}
+document.getElementById('lock-input').focus();
+
+// ── 정규화 ──
+function normalizeSpecial(s){ return s.replace(/→|->|>/g,',').replace(/[·•・]/g,',').replace(/[、，]/g,','); }
+function normStr(s,strict){
+  let r=(s||'').trim();
+  r=normalizeSpecial(r);
+  r=r.replace(/\s*,\s*/g,',');
+  if(!strict) r=r.replace(/\s+/g,'');
+  else r=r.replace(/\s+/g,' ').trim();
+  return r;
+}
+function isMatch(u,a,checkboxId='chk-space'){
+  const el=document.getElementById(checkboxId);
+  const strict=el?el.checked:false;
+  return normStr(u,strict)===normStr(a,strict);
+}
+function escHtml(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function diffHtmlBox(user,ans){
+  const uChars=(user||'').replace(/ /g,'').split('');
+  const aCharsN=normStr(ans,false).split('');
+  const aCharsO=ans.replace(/ /g,'').split('');
+  const m=uChars.length,n=aCharsN.length;
+  const dp=Array.from({length:m+1},()=>new Array(n+1).fill(0));
+  for(let i=1;i<=m;i++) for(let j=1;j<=n;j++){
+    if(normalizeSpecial(uChars[i-1])===aCharsN[j-1]) dp[i][j]=dp[i-1][j-1]+1;
+    else dp[i][j]=Math.max(dp[i-1][j],dp[i][j-1]);
+  }
+  const uM=new Array(m).fill(-1), aM=new Array(n).fill(-1);
+  let i=m,j=n;
+  while(i>0&&j>0){
+    if(normalizeSpecial(uChars[i-1])===aCharsN[j-1]){uM[i-1]=j-1;aM[j-1]=i-1;i--;j--;}
+    else if(dp[i-1][j]>dp[i][j-1]) i--;
+    else j--;
+  }
+  const aSpB={};let ci=0;
+  for(let k=0;k<ans.length;k++){if(ans[k]===' ')aSpB[ci]=true;else ci++;}
+  let res='',ui=0,ai=0;
+  while(ui<m||ai<n){
+    if(ui<m&&ai<n&&uM[ui]===ai&&aM[ai]===ui){
+      if(aSpB[ai]) res+=' ';
+      res+=escHtml(uChars[ui]);ui++;ai++;
+    } else if(ui<m&&uM[ui]===-1){
+      res+=`<span class="diff-box">${escHtml(uChars[ui])}</span>`;ui++;
+    } else if(ai<n&&aM[ai]===-1){
+      if(aSpB[ai]) res+=' ';
+      res+=`<span style="color:#e53935;font-weight:600">${escHtml(aCharsO[ai])}</span>`;ai++;
+    } else {
+      if(ui<m){res+=`<span class="diff-box">${escHtml(uChars[ui])}</span>`;ui++;}
+      else if(ai<n){if(aSpB[ai])res+=' ';res+=`<span style="color:#e53935;font-weight:600">${escHtml(aCharsO[ai])}</span>`;ai++;}
+    }
+  }
+  return res;
+}
+
+function spaceCorrection(user,ans){
+  const uRaw=user||'',aRaw=ans||'';
+  const aSpaces={};let ci=0;
+  for(let i=0;i<aRaw.length;i++){if(aRaw[i]===' ')aSpaces[ci]=true;else ci++;}
+  let h='',charIdx=0;
+  for(let i=0;i<uRaw.length;i++){
+    const ch=uRaw[i];
+    if(ch===' '){h+=aSpaces[charIdx]?' ':`<span class="space-correction">⌒</span>`;}
+    else{if(aSpaces[charIdx]&&(i===0||uRaw[i-1]!==' '))h+=`<span class="space-correction">∨</span>`;h+=escHtml(ch);charIdx++;}
+  }
+  return h;
+}
+
+function calcHeight(text){
+  const l=(text||'').length;
+  if(l>200)return'160px';if(l>120)return'110px';if(l>60)return'80px';return'52px';
+}
+
+function scrollToInput(el){
+  if(!el)return;
+  const rect=el.getBoundingClientRect();
+  const viewH=window.innerHeight;
+  const offset=window.scrollY+rect.top-(viewH/2-rect.height/2);
+  window.scrollTo({top:Math.max(0,offset),behavior:'smooth'});
+}
+
+// ── 오답 노트 (전역) ──
+let wrongNote={};
+
+// ── localStorage ──
+const store={
+  _d:{},
+  get(k){try{return localStorage.getItem(k);}catch(e){return this._d[k]||null;}},
+  set(k,v){try{localStorage.setItem(k,v);}catch(e){this._d[k]=v;}}
+};
+function saveName(){store.set('class_name',document.getElementById('user-name').value);}
+function loadUserData(){
+  const name=store.get('class_name')||'';
+  store.set('class_perfect','0');
+  const el=document.getElementById('user-name');
+  if(el)el.value=name;
+  updateCountBadge(0);
+}
+function updateCountBadge(c){const el=document.getElementById('perfect-count-num');if(el)el.textContent=c;}
+function resetPerfectCount(){store.set('class_perfect','0');updateCountBadge(0);}
+function addPerfectCount(){const c=parseInt(store.get('class_perfect')||'0')+1;store.set('class_perfect',c);updateCountBadge(c);}
+
+// ── 세레모니 ──
+function showPerfect(){
+  const ov=document.getElementById('perfect-overlay');
+  const cv=document.getElementById('confetti-canvas');
+  ov.style.display='flex';cv.style.display='block';
+  runConfetti(cv);
+  setTimeout(()=>{ov.style.display='none';cv.style.display='none';},4000);
+  ov.onclick=()=>{ov.style.display='none';cv.style.display='none';};
+}
+function runConfetti(canvas){
+  const ctx=canvas.getContext('2d');
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  const pieces=Array.from({length:120},()=>({
+    x:Math.random()*canvas.width,y:Math.random()*canvas.height-canvas.height,
+    r:Math.random()*6+4,d:Math.random()*80+20,
+    color:['#2d6a4f','#52b788','#c9a84c','#f4a261','#e76f51'][Math.floor(Math.random()*5)],
+    tilt:Math.random()*10-10,tiltAngle:0,tiltSpeed:Math.random()*.1+.05
+  }));
+  let frame=0;
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p=>{
+      ctx.beginPath();ctx.lineWidth=p.r/2;ctx.strokeStyle=p.color;
+      ctx.moveTo(p.x+p.tilt+p.r/4,p.y);ctx.lineTo(p.x+p.tilt,p.y+p.tilt+p.r/4);ctx.stroke();
+      p.tiltAngle+=p.tiltSpeed;p.y+=Math.cos(frame/20+p.d)+1+p.r/4;
+      p.x+=Math.sin(frame/30)*.5;p.tilt=Math.sin(p.tiltAngle)*12;
+      if(p.y>canvas.height){p.y=-10;p.x=Math.random()*canvas.width;}
+    });
+    frame++;
+    if(frame<240)requestAnimationFrame(draw);else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  draw();
+}
+
+// ── 메인 탭 전환 ──
+let currentMain='elem-exam';
+const mainSections=['elem-exam','mid-exam','elem-toc','mid-toc','high-toc','parable','wrong-note'];
+function switchMain(id){
+  mainSections.forEach(s=>{
+    document.getElementById('section-'+s).style.display=s===id?'block':'none';
+  });
+  document.querySelectorAll('.main-tab').forEach((btn,i)=>{
+    btn.classList.toggle('active',mainSections[i]===id);
+  });
+  currentMain=id;
+  if(id==='wrong-note') renderWrongNote();
+}
+
+// ════════════════════════════════════════════
+// 범용 퀴즈 엔진
+// ════════════════════════════════════════════
+// 각 섹션은 아래 구조를 가짐:
+// {
+//   areaId: 'area-elem-exam',
+//   chkSpaceId: 'chk-space-ee',
+//   items: [  // 문제 목록
+//     {
+//       id: 'ee_1',
+//       label: 'Q1',
+//       question: '문제 텍스트',
+//       parts: [
+//         {key:'ee_1_1', label:'① ...', answer:'정답'}
+//       ]
+//     }
+//   ]
+// }
+
+// 상태 저장소
+const STATE = {};
+// STATE[key] = {ans:'', checked:false, revealed:false}
+
+function getState(key){
+  if(!STATE[key]) STATE[key]={ans:'',checked:false,revealed:false};
+  return STATE[key];
+}
+
+// 각 섹션별 현재 인덱스
+const CURRENT_IDX = {};
+const MODES = {}; // 'trace'|'study'|'exam'
+
+function initSection(cfg){
+  CURRENT_IDX[cfg.areaId]=0;
+  MODES[cfg.areaId]='trace';
+}
+
+function renderSection(cfg){
+  const areaId=cfg.areaId;
+  const mode=MODES[areaId]||'trace';
+  const idx=CURRENT_IDX[areaId]||0;
+  const item=cfg.items[idx];
+  const total=cfg.items.length;
+  const chkId=cfg.chkSpaceId;
+
+  // count correct
+  let correct=0;
+  cfg.items.forEach(it=>it.parts.forEach(p=>{
+    const st=getState(p.key);
+    if(st.checked&&isMatch(st.ans,p.answer,chkId)) correct++;
+  }));
+  const totalParts=cfg.items.reduce((s,it)=>s+it.parts.length,0);
+
+  // dots
+  let dotsHtml='<div class="q-jump">';
+  cfg.items.forEach((it,i)=>{
+    const allC=it.parts.every(p=>getState(p.key).checked);
+    const allOk=allC&&it.parts.every(p=>isMatch(getState(p.key).ans,p.answer,chkId));
+    let cls='q-dot'+(i===idx?' current':'');
+    if(allC){
+      if(mode==='exam') cls+=' done-exam';
+      else cls+=allOk?' done-correct':' done-wrong';
+    }
+    dotsHtml+=`<button class="${cls}" onclick="goItem('${areaId}',${i})">${it.label}</button>`;
+  });
+  dotsHtml+='</div>';
+
+  // parts
+  const partsHtml=item.parts.map((p,pi)=>{
+    const st=getState(p.key);
+    const isCorrect=st.checked&&isMatch(st.ans,p.answer,chkId);
+    let traceAns=mode==='trace'?`<div class="trace-ans">${escHtml(p.answer)}</div>`:'';
+    let feedHtml='';
+    if(st.checked&&mode!=='exam'){
+      if(isCorrect){
+        const strict=document.getElementById(chkId)?.checked;
+        const hasSpaceDiff=!strict&&st.ans.replace(/\s/g,'')===p.answer.replace(/\s/g,'')&&st.ans!==p.answer;
+        feedHtml=hasSpaceDiff
+          ?`<div class="feedback correct" id="feed_${p.key}">✓ 맞았어요! (띄어쓰기 교정)<br><span style="font-size:12px">${spaceCorrection(st.ans,p.answer)}</span></div>`
+          :`<div class="feedback correct" id="feed_${p.key}">✓ 정확히 맞았어요!</div>`;
+      } else {
+        const u=normStr(st.ans,false),a=normStr(p.answer,false);
+        const mt=[...u].filter((c,i)=>c===a[i]).length;
+        const pct2=a.length>0?Math.round(mt/a.length*100):0;
+        feedHtml=`<div class="feedback wrong" id="feed_${p.key}"><div style="margin-bottom:4px">틀렸어요 (${pct2}% 일치)</div><div style="font-size:12px">내 답: ${diffHtmlBox(st.ans,p.answer)}</div></div>`;
+        if(st.revealed) feedHtml+=`<div class="answer-box"><strong>정답:</strong> ${escHtml(p.answer)}</div>`;
+      }
+    }
+    if(st.checked&&mode==='exam') feedHtml=`<div style="font-size:12px;color:var(--text-muted);margin-top:4px;font-style:italic">모의고사 모드 — 결과 확인 후 정답을 볼 수 있어요</div>`;
+
+    const btnHtml=(!st.checked)
+      ?`<div class="btn-row"><button class="primary" onclick="doCheck('${areaId}','${p.key}',${pi})">확인</button></div>`
+      :(mode!=='exam'?`<div class="btn-row">${!st.revealed&&!isCorrect?`<button onclick="doReveal('${p.key}')">정답 보기</button>`:''}<button onclick="doRetry('${areaId}','${p.key}',${pi})">다시 쓰기</button></div>`:'');
+
+    return `<div class="sub-q" id="subq_${p.key}">
+      ${p.label?`<div class="sub-label">${p.label}</div>`:''}
+      ${traceAns}
+      <textarea id="ta_${p.key}" style="min-height:${calcHeight(p.answer)}">${escHtml(st.ans)}</textarea>
+      ${feedHtml}${btnHtml}
+    </div>`;
+  }).join('');
+
+  const allChecked=item.parts.every(p=>getState(p.key).checked);
+  const isLast=idx===total-1;
+  const allDone=cfg.items.every(it=>it.parts.every(p=>getState(p.key).checked));
+  let navHtml='';
+  if(allChecked||(mode==='exam')){
+    navHtml=`<div class="nav-row">
+      ${idx>0?`<button onclick="goItem('${areaId}',${idx-1})">← 이전</button>`:'<span></span>'}
+      <div class="nav-right">
+        ${!isLast?`<button class="primary" onclick="goItem('${areaId}',${idx+1})">다음 →</button>`:''}
+        ${(isLast||allDone)?`<button class="primary" onclick="showScore('${areaId}')">결과 보기 →</button>`:''}
+      </div>
+    </div>`;
+  }
+
+  const pillClass=mode==='trace'?'pill-trace':mode==='study'?'pill-study':'pill-exam';
+  const pillText=mode==='trace'?'따라쓰기':mode==='study'?`맞은 것 ${correct}개`:'모의고사';
+
+  const area=document.getElementById(areaId);
+  area.innerHTML=`
+    <div class="mode-bar">
+      <button class="mode-btn${mode==='trace'?' active':''}" onclick="setMode('${areaId}','trace')">✏️ 따라쓰기</button>
+      <button class="mode-btn${mode==='study'?' active':''}" onclick="setMode('${areaId}','study')">📖 학습 모드</button>
+      <button class="mode-btn${mode==='exam'?' active':''}" onclick="setMode('${areaId}','exam')">📝 모의고사</button>
+    </div>
+    <div class="options-bar">
+      <label><input type="checkbox" id="${chkId}"> 띄어쓰기까지 정확히</label>
+      <div class="reset-btns">
+        <button class="sm danger" onclick="resetItem('${areaId}',${idx})">이 문제 초기화</button>
+        <button class="sm danger" onclick="resetAll('${areaId}')">전체 초기화</button>
+      </div>
+    </div>
+    <div class="progress-row">
+      <span class="prog-label">${idx+1} / ${total}</span>
+      <div class="prog-track"><div class="prog-fill" style="width:${Math.round(idx/total*100)}%"></div></div>
+      <span class="score-pill ${pillClass}">${pillText}</span>
+    </div>
+    ${dotsHtml}
+    <div class="card">
+      <span class="q-num">${item.label}</span>
+      <div class="q-text">${escHtml(item.question)}</div>
+      ${partsHtml}
+    </div>
+    ${navHtml}`;
+
+  // 엔터 바인딩
+  item.parts.forEach((p,pi)=>{
+    const ta=document.getElementById('ta_'+p.key);
+    if(!ta)return;
+    bindEnter(ta,areaId,p.key,pi,cfg);
+  });
+
+  // 포커스
+  const firstUnchecked=item.parts.find(p=>!getState(p.key).checked);
+  if(firstUnchecked){
+    const ta=document.getElementById('ta_'+firstUnchecked.key);
+    if(ta){
+      const isFirstItem=(idx===0&&firstUnchecked===item.parts[0]);
+      if(!isFirstItem) scrollToInput(ta);
+      setTimeout(()=>ta.focus(),80);
+    }
+  }
+}
+
+function bindEnter(ta,areaId,key,pi,cfg){
+  ta.onkeydown=function(e){
+    if(e.key!=='Enter'||e.shiftKey)return;
+    e.preventDefault();
+    const st=getState(key);
+    const item=cfg.items[CURRENT_IDX[areaId]];
+    const p=item.parts[pi];
+    const chkId=cfg.chkSpaceId;
+    if(!st.checked){
+      doCheck(areaId,key,pi,cfg);
+    } else if(isMatch(st.ans,p.answer,chkId)){
+      // 맞음 → 다음
+      moveNext(areaId,key,pi,cfg);
+    } else {
+      // 틀림 → 초기화
+      st.ans='';st.checked=false;st.revealed=false;
+      ta.value='';
+      const oldFeed=document.getElementById('feed_'+key);
+      if(oldFeed)oldFeed.remove();
+      scrollToInput(ta);
+      setTimeout(()=>ta.focus(),60);
+      bindEnter(ta,areaId,key,pi,cfg);
+    }
+  };
+}
+
+function doCheck(areaId,key,pi,cfgArg){
+  const cfg=cfgArg||getCfg(areaId);
+  const ta=document.getElementById('ta_'+key);
+  const st=getState(key);
+  st.ans=ta?ta.value:st.ans;
+  st.checked=true;
+  const item=cfg.items[CURRENT_IDX[areaId]];
+  const p=item.parts[pi];
+  const chkId=cfg.chkSpaceId;
+  const correct=isMatch(st.ans,p.answer,chkId);
+  if(!correct){
+    wrongNote[key]={qLabel:item.label,qText:item.question,partLabel:p.label,answer:p.answer,ua:st.ans};
+  } else { delete wrongNote[key]; }
+
+  if(correct){
+    renderSection(cfg);
+    moveNext(areaId,key,pi,cfg);
+  } else {
+    // 틀림: 피드백 삽입, render 안 함
+    const u=normStr(st.ans,false),a=normStr(p.answer,false);
+    const mt=[...u].filter((c,i)=>c===a[i]).length;
+    const pct2=a.length>0?Math.round(mt/a.length*100):0;
+    const feedHtml=`<div class="feedback wrong" id="feed_${key}"><div style="margin-bottom:4px">틀렸어요 (${pct2}% 일치)</div><div style="font-size:12px">내 답: ${diffHtmlBox(st.ans,p.answer)}</div></div>`;
+    const old=document.getElementById('feed_'+key);
+    if(old)old.remove();
+    if(ta){
+      ta.insertAdjacentHTML('afterend',feedHtml);
+      ta.readOnly=false;
+      scrollToInput(ta);
+      setTimeout(()=>ta.focus(),60);
+      bindEnter(ta,areaId,key,pi,cfg);
+    }
+  }
+}
+
+function doReveal(key){
+  getState(key).revealed=true;
+  // find cfg
+  const cfg=getCfgByKey(key);
+  if(cfg) renderSection(cfg);
+}
+
+function doRetry(areaId,key,pi){
+  const st=getState(key);
+  st.ans='';st.checked=false;st.revealed=false;
+  const cfg=getCfg(areaId);
+  renderSection(cfg);
+  setTimeout(()=>{
+    const ta=document.getElementById('ta_'+key);
+    if(ta){ta.value='';ta.focus();}
+  },30);
+}
+
+function moveNext(areaId,key,pi,cfg){
+  const item=cfg.items[CURRENT_IDX[areaId]];
+  // 다음 미채점 소문항
+  for(let npi=pi+1;npi<item.parts.length;npi++){
+    const np=item.parts[npi];
+    if(!getState(np.key).checked){
+      setTimeout(()=>{
+        const ta=document.getElementById('ta_'+np.key);
+        if(ta){scrollToInput(ta);ta.focus();}
+      },80);
+      return;
+    }
+  }
+  // 마지막 소문항 — 엔터로 다음 문제
+  setTimeout(()=>{
+    const ta=document.getElementById('ta_'+key);
+    if(ta){
+      ta.focus();
+      ta.onkeydown=function(e){
+        if(e.key!=='Enter'||e.shiftKey)return;
+        e.preventDefault();
+        const idx=CURRENT_IDX[areaId];
+        if(idx<cfg.items.length-1) goItem(areaId,idx+1);
+        else showScore(areaId);
+      };
+    }
+  },80);
+}
+
+function goItem(areaId,idx){
+  CURRENT_IDX[areaId]=idx;
+  const cfg=getCfg(areaId);
+  renderSection(cfg);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function setMode(areaId,mode){
+  MODES[areaId]=mode;
+  const cfg=getCfg(areaId);
+  renderSection(cfg);
+}
+
+function resetItem(areaId,idx){
+  const cfg=getCfg(areaId);
+  cfg.items[idx].parts.forEach(p=>{STATE[p.key]={ans:'',checked:false,revealed:false};});
+  renderSection(cfg);
+}
+
+function resetAll(areaId){
+  if(!confirm('모든 답을 초기화할까요?'))return;
+  const cfg=getCfg(areaId);
+  cfg.items.forEach(it=>it.parts.forEach(p=>{STATE[p.key]={ans:'',checked:false,revealed:false};}));
+  CURRENT_IDX[areaId]=0;
+  renderSection(cfg);
+}
+
+function showScore(areaId){
+  const cfg=getCfg(areaId);
+  const chkId=cfg.chkSpaceId;
+  let correct=0,wrong=[],total=0;
+  cfg.items.forEach(it=>it.parts.forEach(p=>{
+    total++;
+    const st=getState(p.key);
+    if(isMatch(st.ans,p.answer,chkId)) correct++;
+    else wrong.push({qLabel:it.label,qText:it.question,partLabel:p.label,answer:p.answer,ua:st.ans});
+  }));
+  const pct=Math.round(correct/total*100);
+  const msg=pct===100?'필승! 완벽합니다!':pct>=80?'아주 잘 하셨어요!':pct>=60?'조금만 더 연습해 봐요!':'반복 학습해 보세요.';
+  if(pct===100){setTimeout(showPerfect,400);if(MODES[areaId]==='exam') addPerfectCount();}
+  const wHtml=wrong.map(w=>`<div class="wrong-item"><div class="wq">${escHtml(w.qLabel)} ${w.partLabel?'— '+escHtml(w.partLabel):''}</div><div class="wa">정답: ${escHtml(w.answer)}</div>${w.ua?`<div style="font-size:12px;margin-top:4px">내 답: ${diffHtmlBox(w.ua,w.answer)}</div>`:''}</div>`).join('');
+  const area=document.getElementById(areaId);
+  area.innerHTML=`<div class="score-screen">
+    <div class="score-circle"><div class="score-num">${pct}%</div><div class="score-sub">${correct}/${total}</div></div>
+    <div class="score-msg">${msg}</div>
+    <div class="stat-row">
+      <span class="stat-chip" style="background:var(--accent-light);color:var(--accent-dark)">정답 ${correct}</span>
+      <span class="stat-chip" style="background:var(--warn-light);color:var(--warn)">오답 ${total-correct}</span>
+    </div>
+    <div class="score-btn-row">
+      <button onclick="restartSection('${areaId}')">처음부터 다시</button>
+      <button class="primary" onclick="retryWrong('${areaId}')">틀린 것만 다시</button>
+      <button onclick="switchMain('wrong-note')">오답 노트 →</button>
+    </div>
+    ${wrong.length>0?`<div class="wrong-list"><div class="wrong-list-title">틀린 문항 (${wrong.length}개)</div>${wHtml}</div>`:''}
+  </div>`;
+}
+
+function restartSection(areaId){
+  const cfg=getCfg(areaId);
+  cfg.items.forEach(it=>it.parts.forEach(p=>{STATE[p.key]={ans:'',checked:false,revealed:false};}));
+  CURRENT_IDX[areaId]=0;
+  renderSection(cfg);
+}
+
+function retryWrong(areaId){
+  const cfg=getCfg(areaId);
+  const chkId=cfg.chkSpaceId;
+  cfg.items.forEach(it=>it.parts.forEach(p=>{
+    const st=getState(p.key);
+    if(!isMatch(st.ans,p.answer,chkId)) STATE[p.key]={ans:'',checked:false,revealed:false};
+  }));
+  const firstWrong=cfg.items.findIndex(it=>it.parts.some(p=>!getState(p.key).checked));
+  CURRENT_IDX[areaId]=firstWrong>=0?firstWrong:0;
+  renderSection(cfg);
+}
+
+// ── cfg 조회 ──
+const CFG_MAP = {};
+function getCfg(areaId){ return CFG_MAP[areaId]; }
+function getCfgByKey(key){
+  for(const id in CFG_MAP){
+    const cfg=CFG_MAP[id];
+    for(const it of cfg.items) for(const p of it.parts) if(p.key===key) return cfg;
+  }
+  return null;
+}
+
+// ── 오답 노트 ──
+function renderWrongNote(){
+  const area=document.getElementById('area-wrong-note');
+  const items=Object.values(wrongNote);
+  if(!items.length){
+    area.innerHTML='<div class="empty-note"><div style="font-size:32px;margin-bottom:8px">📭</div><div>아직 오답이 없어요.</div></div>';
+    return;
+  }
+  const html=items.map(w=>`<div class="wrong-item"><div class="wq">${escHtml(w.qLabel||'')} ${w.partLabel?'— '+escHtml(w.partLabel):''}<br><span style="color:var(--text)">${escHtml(w.qText||'')}</span></div><div class="wa">정답: ${escHtml(w.answer)}</div>${w.ua?`<div style="color:#999;font-size:12px;margin-top:2px">내 답: ${escHtml(w.ua)}</div>`:''}</div>`).join('');
+  area.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+    <div class="wrong-list-title" style="border:none;margin:0">오답 노트 — ${items.length}개</div>
+    <button class="sm danger" onclick="clearWrongNote()">초기화</button>
+  </div>${html}`;
+}
+function clearWrongNote(){if(confirm('오답 노트를 초기화할까요?')){wrongNote={};renderWrongNote();}}
+
+// ════════════════════════════════════════════
+// 데이터 정의
+// ════════════════════════════════════════════
+
+// ── 초등 종강 시험 ──
+const ELEM_EXAM_ITEMS = [
+  {id:'ee',label:'Q1',question:'①하나님과 ②마귀는 각각 어떤 존재인지 쓰시오.',parts:[
+    {key:'ee_1_1',label:'① 하나님',answer:'스스로 계신 분 즉 자존자'},
+    {key:'ee_1_2',label:'② 마귀',answer:'창조받은 피조자, 범죄한 천사'},
+  ]},
+  {id:'ee',label:'Q2',question:'성경은 ①누가 누구에게, ②왜 준 것인지 쓰시오.',parts:[
+    {key:'ee_2_1',label:'①',answer:'하나님이 죄인들에게'},
+    {key:'ee_2_2',label:'②',answer:'생명이신 하나님과 사망자 마귀를 알리기 위함'},
+  ]},
+  {id:'ee',label:'Q3',question:'성경은 ①어떤 책인가? 또한 ②구약과 ③신약은 누가 지켜야 할 약속인지 각각 증거 성구와 함께 쓰시오.',parts:[
+    {key:'ee_3_1',label:'①',answer:'하나님과 택한 선민과의 언약서'},
+    {key:'ee_3_2',label:'② 구약',answer:'육적 이스라엘, 출 19:5~6'},
+    {key:'ee_3_3',label:'③ 신약',answer:'계시록 성취 때 사람들, 눅 22:14~20, 계 22:18~19'},
+  ]},
+  {id:'ee',label:'Q4',question:'성경의 저자는 ①누구이며, 기록자는 ②몇 명, 누구인가? 하나님이 성경을 주신 ③목적과 ④구약과 ⑤신약은 각각 몇 권, 몇 장, 몇 절인지 쓰시오.',parts:[
+    {key:'ee_4_1',label:'① 저자',answer:'하나님'},
+    {key:'ee_4_2',label:'② 기록자',answer:'약 35~40명, 선지자와 제자들'},
+    {key:'ee_4_3',label:'③ 목적',answer:'믿는 자에게 천국과 영생을 주시기 위함'},
+    {key:'ee_4_4',label:'④ 구약',answer:'39권, 929장, 23,144절'},
+    {key:'ee_4_5',label:'⑤ 신약',answer:'27권, 260장, 7,957절'},
+  ]},
+  {id:'ee',label:'Q5',question:'성경의 내용을 네 가지로 분류하면 ①무엇인가? 또한 예언이 성취되는 노정 순리는 ②무엇인지 ③증거 성구 1개와 함께 쓰시오.',parts:[
+    {key:'ee_5_1',label:'①',answer:'역사, 교훈, 예언, 성취(실상)'},
+    {key:'ee_5_2',label:'②',answer:'배도·멸망·구원'},
+    {key:'ee_5_3',label:'③',answer:'살후 2:1~3'},
+  ]},
+  {id:'ee',label:'Q6',question:'하나님이 아브라함에게 하신 약속 중 \'아브라함의 자손이 이방에서 나온다\'는 것(창 15:13~14)은 ①언제 이루셨고, 하나님이 구약 선지자들에게 하신 약속은 ②언제 이루어졌으며, 예수님 초림 때의 약속은 ③언제 다 이루시는지 각각 증거 성구 1개와 함께 쓰시오.',parts:[
+    {key:'ee_6_1',label:'①',answer:'모세 때, 출 12장'},
+    {key:'ee_6_2',label:'②',answer:'예수님 초림 때, 요 19:30'},
+    {key:'ee_6_3',label:'③',answer:'재림 때, 계 21:6'},
+  ]},
+  {id:'ee',label:'Q7',question:'예언 성취 때 참 믿음은 ①무엇인지 ②증거 성구 1개와 함께 쓰시오.',parts:[
+    {key:'ee_7_1',label:'①',answer:'예언대로 이룬 실상을 믿는 믿음'},
+    {key:'ee_7_2',label:'②',answer:'요 14:29'},
+  ]},
+  {id:'ee',label:'Q8',question:'신·구약의 전쟁은 ①누구와 누구의 싸움이었는가? 또한 하나님과 사단이 전쟁을 하게 된 이유는 각각 ②무엇인가?',parts:[
+    {key:'ee_8_1',label:'①',answer:'하나님 소속의 영·육과 사단 소속의 영·육'},
+    {key:'ee_8_2',label:'② 하나님',answer:'만물을 되찾으시기 위함'},
+    {key:'ee_8_3',label:'② 사단',answer:'지구촌을 빼앗기지 않기 위함'},
+  ]},
+  {id:'ee',label:'Q9',question:'성경 역사의 흐름을 7개 시대로 구분하여 순서대로 쓰시오.',parts:[
+    {key:'ee_9_1',label:'순서',answer:'① 창세 시대 → ② 출애굽 율법 시대 → ③ 사사 시대 → ④ 왕권 시대 → ⑤ 선지 시대 → ⑥ 하늘 복음 시대 → ⑦ 재창조 계시 시대'},
+  ]},
+  {id:'ee',label:'Q10',question:'예수님이 초림 때 천국 비밀을 비유로 말씀하신 두 가지 이유는 ①무엇인가? 또한 비유를 깨닫지 못한 자의 결과는 ②무엇이며, 비유의 참뜻은 ③언제 밝혀 알게 되는지 각각 성구 1개와 함께 쓰시오.',parts:[
+    {key:'ee_10_1',label:'①',answer:'구약 선지자로 하신 말씀을 이루기 위함, 대적에게 감추기 위함'},
+    {key:'ee_10_2',label:'②',answer:'죄사함 받지 못하여 구원받지 못함, 막 4:10~12'},
+    {key:'ee_10_3',label:'③',answer:'비유의 실체가 출현하였을 때, 요 16:25'},
+  ]},
+  {id:'ee',label:'Q11',question:'비유한 단어의 참뜻을 쓰시오.',parts:[
+    {key:'ee_11_1',label:'① 씨',answer:'말씀'},
+    {key:'ee_11_2',label:'② 밭',answer:'사람의 마음, 세상'},
+    {key:'ee_11_3',label:'③ 나무',answer:'말씀의 씨로 거듭난 속사람(목자)'},
+    {key:'ee_11_4',label:'④ 새',answer:'영'},
+    {key:'ee_11_5',label:'⑤ 가지',answer:'제자'},
+    {key:'ee_11_6',label:'⑥ 잎사귀',answer:'전도자'},
+    {key:'ee_11_7',label:'⑦ 열매',answer:'말씀, 말씀으로 맺은 성도'},
+    {key:'ee_11_8',label:'⑧ 마 24장, 때를 따라 양식을 나눠 준다는 것',answer:'예언대로 이룬 실상을 증거하는 것'},
+  ]},
+  {id:'ee',label:'Q12',question:'비유한 단어의 참뜻을 쓰시오.',parts:[
+    {key:'ee_12_1',label:'① 그릇',answer:'사람, 교회'},
+    {key:'ee_12_2',label:'② 저울',answer:'말씀'},
+    {key:'ee_12_3',label:'③ 지팡이',answer:'말씀과 사람'},
+    {key:'ee_12_4',label:'④ 철장',answer:'다스리는 교권'},
+    {key:'ee_12_5',label:'⑤ 불',answer:'말씀'},
+    {key:'ee_12_6',label:'⑥ 향로, 향',answer:'사람, 성도의 기도'},
+    {key:'ee_12_7',label:'⑦ 향연',answer:'기도 상달'},
+    {key:'ee_12_8',label:'⑧ 가마',answer:'교회'},
+  ]},
+  {id:'ee',label:'Q13',question:'비유한 단어의 참뜻을 쓰시오.',parts:[
+    {key:'ee_13_1',label:'① 빛 / 어두움',answer:'생명의 말씀 / 말씀이 없는 무지'},
+    {key:'ee_13_2',label:'② 등대(촛대)·눈',answer:'영과 사명자'},
+    {key:'ee_13_3',label:'③ 소경·귀머거리',answer:'말씀을 보아도·들어도 깨닫지 못하는 자'},
+    {key:'ee_13_4',label:'④ 옷 / 예복',answer:'마음, 행실, 교리 / 옳은 행실'},
+    {key:'ee_13_5',label:'⑤ 보물',answer:'말씀'},
+    {key:'ee_13_6',label:'⑥ 부자',answer:'말씀(지식)이 많은 사람'},
+  ]},
+  {id:'ee',label:'Q14',question:'비유한 단어의 참뜻을 쓰시오.',parts:[
+    {key:'ee_14_1',label:'① 물',answer:'말씀'},
+    {key:'ee_14_2',label:'② 샘',answer:'목자와 성전(교회)'},
+    {key:'ee_14_3',label:'③ 강',answer:'제자와 전도자의 마음'},
+    {key:'ee_14_4',label:'④ 바다',answer:'세상'},
+    {key:'ee_14_5',label:'⑤ 어부',answer:'목자(전도자)'},
+    {key:'ee_14_6',label:'⑥ 그물',answer:'말씀'},
+    {key:'ee_14_7',label:'⑦ 고기(물고기)',answer:'사람'},
+    {key:'ee_14_8',label:'⑧ 배',answer:'교회와 같은 조직체'},
+  ]},
+  {id:'ee',label:'Q15',question:'비유한 단어의 참뜻을 쓰시오.',parts:[
+    {key:'ee_15_1',label:'① 짐승',answer:'거짓 목자'},
+    {key:'ee_15_2',label:'② 머리',answer:'우두머리(목자)'},
+    {key:'ee_15_3',label:'③ 뿔',answer:'머리에 속해서 싸우는 권세자(장로)'},
+    {key:'ee_15_4',label:'④ 꼬리',answer:'거짓 선지자'},
+    {key:'ee_15_5',label:'⑤ 어린 양의 피와 살',answer:'예수님의 생명의 말씀'},
+  ]},
+  {id:'ee',label:'Q16',question:'비유한 단어의 참뜻을 쓰시오.',parts:[
+    {key:'ee_16_1',label:'① 새 포도주',answer:'새 계시 말씀'},
+    {key:'ee_16_2',label:'② 새 부대',answer:'새 목자와 제자들'},
+    {key:'ee_16_3',label:'③ 감람유',answer:'증인의 증거의 말씀'},
+  ]},
+  {id:'ee',label:'Q17',question:'비유한 단어의 참뜻을 쓰시오.',parts:[
+    {key:'ee_17_1',label:'① 산',answer:'교회, 성전'},
+    {key:'ee_17_2',label:'② 돌',answer:'심판의 말씀, 심판권을 받은 목자'},
+    {key:'ee_17_3',label:'③ 우상',answer:'거짓 스승(목자)'},
+    {key:'ee_17_4',label:'④ 인(印)',answer:'하나님의 말씀'},
+    {key:'ee_17_5',label:'⑤ 나팔 소리',answer:'알리는 말씀'},
+    {key:'ee_17_6',label:'⑥ 노래',answer:'설교 말씀'},
+    {key:'ee_17_7',label:'⑦ 모세의 노래',answer:'구약 성경의 말씀'},
+    {key:'ee_17_8',label:'⑧ 어린양의 노래',answer:'신약 성경의 말씀'},
+    {key:'ee_17_9',label:'⑨ 새 노래',answer:'계시록이 성취된 실상의 말씀'},
+  ]},
+  {id:'ee',label:'Q18',question:'비유한 단어의 참뜻을 쓰시오.',parts:[
+    {key:'ee_18_1',label:'① 네 생물',answer:'네 천사장'},
+    {key:'ee_18_2',label:'② 바람',answer:'천사와 심판'},
+    {key:'ee_18_3',label:'③ 생기',answer:'생명의 말씀'},
+    {key:'ee_18_4',label:'④ 죽음',answer:'생명의 말씀이 없는 상태'},
+    {key:'ee_18_5',label:'⑤ 무덤',answer:'비진리의 조직체'},
+    {key:'ee_18_6',label:'⑥ 부활',answer:'생명의 말씀으로 다시 산 것'},
+    {key:'ee_18_7',label:'⑦ 신랑 / 신부',answer:'영 / 육'},
+    {key:'ee_18_8',label:'⑧ 과부',answer:'배도한 목자'},
+    {key:'ee_18_9',label:'⑨ 고아',answer:'배도한 목자 소속 교인'},
+  ]},
+  {id:'ee',label:'Q19',question:'비유한 단어의 참뜻을 쓰시오.',parts:[
+    {key:'ee_19_1',label:'① 예루살렘',answer:'선민의 교단'},
+    {key:'ee_19_2',label:'② 바벨론',answer:'이방 귀신의 교단'},
+    {key:'ee_19_3',label:'③ 전쟁',answer:'교리 싸움'},
+    {key:'ee_19_4',label:'④ 하늘, 땅',answer:'선민의 장막, 백성(성도)'},
+    {key:'ee_19_5',label:'⑤ 해·달·별',answer:'목자·전도자·성도'},
+    {key:'ee_19_6',label:'⑥ 처음 하늘 처음 땅',answer:'처음 장막과 처음 성도'},
+    {key:'ee_19_7',label:'⑦ 새 하늘 새 땅',answer:'새 장막과 새 성도'},
+    {key:'ee_19_8',label:'⑧ 천국 열쇠',answer:'천국의 비밀을 아는 지혜'},
+    {key:'ee_19_9',label:'⑨ 지옥 열쇠',answer:'사단의 비밀을 아는 지혜'},
+  ]},
+  {id:'ee',label:'Q20',question:'각 단어가 무엇을 가리키는지 쓰시오.',parts:[
+    {key:'ee_20_1',label:'① 이스라엘',answer:'이긴 자, 선민'},
+    {key:'ee_20_2',label:'② 세 가지 이스라엘',answer:'육적 이스라엘, 영적 이스라엘, 영적 새 이스라엘'},
+    {key:'ee_20_3',label:'③ 세 가지 천국',answer:'영계의 천국, 먼저 택한 선민의 장막, 재창조된 인 맞은 12지파'},
+  ]},
+];
+
+// ── 중등 종강 시험 ──
+const MID_EXAM_ITEMS = [
+  {id:'me',label:'Q1',question:'하나님이 출애굽한 육적 이스라엘 백성들과 언약하신 것 두 가지는 ①무엇인지 ②관련 성구 2개와 함께 쓰시오.',parts:[
+    {key:'me_1_1',label:'①',answer:'언약을 지키면 제사장 나라와 거룩한 백성 삼아주실 것, 하나님 외에 다른 신을 섬기지 말 것'},
+    {key:'me_1_2',label:'②',answer:'출 19:5~6, 출 20:3'},
+  ]},
+  {id:'me',label:'Q2',question:'하나님께서 영계대로 육계를 창조하시는 목적은 무엇인가?',parts:[
+    {key:'me_2_1',label:'답',answer:'사람과 지구촌을 회복하시고 하나님의 통치 세계를 이루시기 위함'},
+  ]},
+  {id:'me',label:'Q3',question:'하나님께서는 시대마다 한 목자를 택하시고, 하늘의 것을 보여 주시며 이 땅에 그대로 이루게 하셨다. ①모세 때와 ②초림 때와 ③재림 때 하늘의 것을 보고 이 땅 가운데 이루시는 한 목자를 각각 성구와 함께 쓰시오.',parts:[
+    {key:'me_3_1',label:'① 모세 때',answer:'모세, 출 25:8~9'},
+    {key:'me_3_2',label:'② 초림 때',answer:'예수님, 요 5:19'},
+    {key:'me_3_3',label:'③ 재림 때',answer:'새요한, 계 4장, 21장'},
+  ]},
+  {id:'me',label:'Q4',question:'사 1:1~2:4의 핵심 내용을 순서대로 빈칸에 쓰시오.',parts:[
+    {key:'me_4_1',label:'순서',answer:'(① 유다와 예루살렘)에 대한 이상 - 양육한 (② 선민 배도) - 이방에 의한 (③ 선민 멸망) - 만방이 몰려오는 (④ 하나님의 산) - (⑤ 추수와 평화 세계) 완성'},
+  ]},
+  {id:'me',label:'Q5',question:'계시가 중요한 ①이유를 ②증거 성구 2개와 함께 쓰시오.',parts:[
+    {key:'me_5_1',label:'①',answer:'참 하나님을 앎으로 영생을 얻기 때문'},
+    {key:'me_5_2',label:'②',answer:'마 11:27, 요 17:3'},
+  ]},
+  {id:'me',label:'Q6',question:'계시록에서 하늘 장막 선민이 용의 무리에게 패한 ①이유와 그 결과는 ②무엇인지 쓰시오. 또한 계시록의 12지파는 ③어떤 자들로 창조한 것이며, 이들이 받게 되는 복은 ④무엇인지 쓰시오.',parts:[
+    {key:'me_6_1',label:'①',answer:'아담같이 언약을 어기고 배도했기 때문'},
+    {key:'me_6_2',label:'②',answer:'일곱 길로 도망'},
+    {key:'me_6_3',label:'③',answer:'새 언약을 지킨 자들'},
+    {key:'me_6_4',label:'④',answer:'죄 사함, 천국, 영생'},
+  ]},
+  {id:'me',label:'Q7',question:'①구약의 약속의 목자는 누구이며, 무엇을 증거하였는가? 또한 ②신약의 약속의 목자는 누구이며, 무엇을 증거하였는가?',parts:[
+    {key:'me_7_1',label:'①',answer:'예수님, 구약의 예언과 그 이룬 실상'},
+    {key:'me_7_2',label:'②',answer:'이긴자 새요한, 신약 계시록의 예언과 그 이룬 실상'},
+  ]},
+  {id:'me',label:'Q8',question:'주 재림 때 임해 오는 하나님의 영계의 나라는 ①무엇이며, ②누구에게 임해 오는지 증거 성구와 함께 쓰시오.',parts:[
+    {key:'me_8_1',label:'①',answer:'거룩한 성 새 예루살렘'},
+    {key:'me_8_2',label:'② 신약의 약속의 목자 이긴자',answer:'계 3:12'},
+    {key:'me_8_3',label:'② 양 같은 신앙인',answer:'마 25:34'},
+    {key:'me_8_4',label:'② 새 하늘 새 땅 사람들(신천지 12지파 성도)',answer:'계 21:1~4'},
+  ]},
+  {id:'me',label:'Q9',question:'하나님은 예레미야를 통해 새 일 창조하실 것을 예언하셨다. 그렇다면 새 일 창조의 완성은 ①언제, ②무엇으로 성취되는지 ③성경 장 1개와 함께 쓰시오.',parts:[
+    {key:'me_9_1',label:'①',answer:'계시록 성취 때'},
+    {key:'me_9_2',label:'②',answer:'신천지 12지파 창조'},
+    {key:'me_9_3',label:'③',answer:'계 21장'},
+  ]},
+  {id:'me',label:'Q10',question:'마 24장의 도망가야 할 주 재림 때 구원의 처소는 ①어디이며, 이곳에는 ②누가 있는지 쓰시오.',parts:[
+    {key:'me_10_1',label:'①',answer:'하나님의 보좌가 임한 시온산'},
+    {key:'me_10_2',label:'②',answer:'하나님과 보좌, 예수님, 하나님의 가족들'},
+  ]},
+  {id:'me',label:'Q11',question:'주 재림 때 어린양의 천국 혼인 잔치는 ①무슨 일 후, ②어디에서 있는지 쓰고, 혼인 잔치 집의 증표는 ③무엇인지 쓰시오.',parts:[
+    {key:'me_11_1',label:'①',answer:'계 18장 바벨론 심판 후'},
+    {key:'me_11_2',label:'②',answer:'신천지예수교 증거장막성전'},
+    {key:'me_11_3',label:'③',answer:'하나님의 소(배도자)와 살진 짐승(멸망자)'},
+  ]},
+  {id:'me',label:'Q12',question:'하나님의 목적은 무엇인가?',parts:[
+    {key:'me_12_1',label:'①',answer:'새 나라 새 민족 12지파 창조'},
+    {key:'me_12_2',label:'②',answer:'용을 잡아 가둠'},
+    {key:'me_12_3',label:'③',answer:'영육 결혼과 하나님의 통치'},
+  ]},
+  {id:'me',label:'Q13',question:'보혜사(保惠師)의 뜻은 ①무엇이며, 주 재림 때 예수님의 약속대로 오신 보혜사의 영이 함께하는 대언자는 ②누구인가?',parts:[
+    {key:'me_13_1',label:'①',answer:'은혜로 보호하는 스승(대언자)'},
+    {key:'me_13_2',label:'②',answer:'이긴자 새요한'},
+  ]},
+  {id:'me',label:'Q14',question:'①초림 때와 ②재림 때, 이 땅의 생명나무의 실체를 각각 쓰시오.',parts:[
+    {key:'me_14_1',label:'① 초림 때',answer:'예수님, 12제자'},
+    {key:'me_14_2',label:'② 재림 때',answer:'이긴자 새요한, 신천지 12지파'},
+  ]},
+  {id:'me',label:'Q15',question:'예수님의 피의 효력은 ①언제, ②누구에게 나타나는지 그 실체를 ③증거 성구와 함께 쓰시오.',parts:[
+    {key:'me_15_1',label:'①',answer:'계시록 성취 때'},
+    {key:'me_15_2',label:'②',answer:'신천지 12지파 144,000과 흰 무리'},
+    {key:'me_15_3',label:'③',answer:'계 1:5~6, 계 5:9~10, 계 7:14'},
+  ]},
+  {id:'me',label:'Q16',question:'마지막 일곱째 나팔 소리로 인해 이루어지는 것은 ①무엇이며, 일곱째 나팔은 ②무슨 일 후 불리는가?',parts:[
+    {key:'me_16_1',label:'①',answer:'하나님의 승리와 부활과 영생'},
+    {key:'me_16_2',label:'②',answer:'배도와 멸망의 일 후'},
+  ]},
+  {id:'me',label:'Q17',question:'재림 때 전통 교회가 신천지에 핍박을 퍼부었으나 신천지는 이겼다. 이긴 증거는 무엇인가?',parts:[
+    {key:'me_17_1',label:'답',answer:'예수님과 천사들이 함께 추수하심으로 달마다 열두 가지 열매 맺어 급성장함'},
+  ]},
+  {id:'me',label:'Q18',question:'계시록이 성취되는 주 재림 때의 ①\'도의 초보\'와 ②\'완전한 도\'는 무엇인지 쓰시오.',parts:[
+    {key:'me_18_1',label:'① 도의 초보',answer:'아담 때부터 계시록 성취 이전까지의 모든 말씀'},
+    {key:'me_18_2',label:'② 완전한 도',answer:'계시록의 예언을 이룬 실상'},
+  ]},
+  {id:'me',label:'Q19',question:'비유한 단어의 참뜻을 쓰시오.',parts:[
+    {key:'me_19_1',label:'① 예루살렘',answer:'선민의 교단'},
+    {key:'me_19_2',label:'② 바벨론',answer:'이방 귀신의 교단'},
+    {key:'me_19_3',label:'③ 전쟁',answer:'교리 싸움'},
+    {key:'me_19_4',label:'④ 하늘, 땅',answer:'선민의 장막, 백성(성도)'},
+    {key:'me_19_5',label:'⑤ 해·달·별',answer:'목자·전도자·성도'},
+    {key:'me_19_6',label:'⑥ 처음 하늘 처음 땅',answer:'처음 장막과 처음 성도'},
+    {key:'me_19_7',label:'⑦ 새 하늘 새 땅',answer:'새 장막과 새 성도'},
+    {key:'me_19_8',label:'⑧ 천국 열쇠',answer:'천국의 비밀을 아는 지혜'},
+    {key:'me_19_9',label:'⑨ 지옥 열쇠',answer:'사단의 비밀을 아는 지혜'},
+  ]},
+  {id:'me',label:'Q20',question:'각 단어가 무엇을 가리키는지 쓰시오.',parts:[
+    {key:'me_20_1',label:'① 이스라엘',answer:'이긴 자, 선민'},
+    {key:'me_20_2',label:'② 세 가지 이스라엘',answer:'육적 이스라엘, 영적 이스라엘, 영적 새 이스라엘'},
+    {key:'me_20_3',label:'③ 세 가지 천국',answer:'영계의 천국, 먼저 택한 선민의 장막, 재창조된 인 맞은 12지파'},
+  ]},
+];
+
+// ── 초등 목차 ──
+const ELEM_TOC_ITEMS = [
+  {id:'et',label:'제1과',question:'두 가지 신(하나님과 사단)',parts:[{key:'et_1',label:'제목',answer:'두 가지 신(하나님과 사단)'}]},
+  {id:'et',label:'제2과',question:'성경 상식',parts:[{key:'et_2',label:'제목',answer:'성경 상식'}]},
+  {id:'et',label:'제3과',question:'천국 비밀 비유',parts:[{key:'et_3',label:'제목',answer:'천국 비밀 비유'}]},
+  {id:'et',label:'제4과',question:'비유한 씨·밭·나무·새',parts:[{key:'et_4',label:'제목',answer:'비유한 씨·밭·나무·새'}]},
+  {id:'et',label:'제5과',question:'비유한 양식과 누록',parts:[{key:'et_5',label:'제목',answer:'비유한 양식과 누록'}]},
+  {id:'et',label:'제6과',question:'비유한 그릇·저울·지팡이',parts:[{key:'et_6',label:'제목',answer:'비유한 그릇·저울·지팡이'}]},
+  {id:'et',label:'제7과',question:'비유한 불·향로·가마',parts:[{key:'et_7',label:'제목',answer:'비유한 불·향로·가마'}]},
+  {id:'et',label:'제8과',question:'비유한 빛·등대와 소경·귀머거리, 예복',parts:[{key:'et_8',label:'제목',answer:'비유한 빛·등대와 소경·귀머거리, 예복'}]},
+  {id:'et',label:'제9과',question:'비유한 보물·부자',parts:[{key:'et_9',label:'제목',answer:'비유한 보물·부자'}]},
+  {id:'et',label:'제10과',question:'비유한 물·샘·강',parts:[{key:'et_10',label:'제목',answer:'비유한 물·샘·강'}]},
+  {id:'et',label:'제11과',question:'비유한 바다·어부·그물·고기·배',parts:[{key:'et_11',label:'제목',answer:'비유한 바다·어부·그물·고기·배'}]},
+  {id:'et',label:'제12과',question:'비유한 짐승과 머리·뿔·꼬리',parts:[{key:'et_12',label:'제목',answer:'비유한 짐승과 머리·뿔·꼬리'}]},
+  {id:'et',label:'제13과',question:'비유한 어린 양의 피와 살',parts:[{key:'et_13',label:'제목',answer:'비유한 어린 양의 피와 살'}]},
+  {id:'et',label:'제14과',question:'비유한 새 포도주와 새 부대와 감람유',parts:[{key:'et_14',label:'제목',answer:'비유한 새 포도주와 새 부대와 감람유'}]},
+  {id:'et',label:'제15과',question:'비유한 산·돌·우상',parts:[{key:'et_15',label:'제목',answer:'비유한 산·돌·우상'}]},
+  {id:'et',label:'제16과',question:'비유한 인(表)·나팔·노래',parts:[{key:'et_16',label:'제목',answer:'비유한 인(表)·나팔·노래'}]},
+  {id:'et',label:'제17과',question:'비유한 생물과 바람',parts:[{key:'et_17',label:'제목',answer:'비유한 생물과 바람'}]},
+  {id:'et',label:'제18과',question:'비유한 죽음과 부활',parts:[{key:'et_18',label:'제목',answer:'비유한 죽음과 부활'}]},
+  {id:'et',label:'제19과',question:'비유한 신랑·신부·과부·고아',parts:[{key:'et_19',label:'제목',answer:'비유한 신랑·신부·과부·고아'}]},
+  {id:'et',label:'제20과',question:'비유한 예루살렘과 바벨론과의 전쟁',parts:[{key:'et_20',label:'제목',answer:'비유한 예루살렘과 바벨론과의 전쟁'}]},
+  {id:'et',label:'제21과',question:'비유한 하늘·땅, 해·달·별',parts:[{key:'et_21',label:'제목',answer:'비유한 하늘·땅, 해·달·별'}]},
+  {id:'et',label:'제22과',question:'세 가지 이스라엘',parts:[{key:'et_22',label:'제목',answer:'세 가지 이스라엘'}]},
+  {id:'et',label:'제23과',question:'세 가지의 천국과 비유한 열쇠',parts:[{key:'et_23',label:'제목',answer:'세 가지의 천국과 비유한 열쇠'}]},
+  {id:'et',label:'제24과',question:'거듭나는 성장 과정과 인내의 믿음',parts:[{key:'et_24',label:'제목',answer:'거듭나는 성장 과정과 인내의 믿음'}]},
+];
+
+// ── 중등 목차 ──
+const MID_TOC_ITEMS = [
+  {id:'mt',label:'제1과',question:'하나님의 언약, 아브라함과 계시록',parts:[{key:'mt_1',label:'제목 및 성구',answer:'하나님의 언약, 아브라함과 계시록 / 창 15장(출 12장), 요 19:30, 계 21:6'}]},
+  {id:'mt',label:'제2과',question:'하늘 영계대로 창조된 육계의 천국',parts:[{key:'mt_2',label:'제목 및 성구',answer:'하늘 영계대로 창조된 육계의 천국 / 출 25장, 마 6:10, 계 4장, 계 21장'}]},
+  {id:'mt',label:'제3과',question:'선민의 배도, 멸망, 구원의 순리',parts:[{key:'mt_3',label:'제목 및 성구',answer:'선민의 배도, 멸망, 구원의 순리 / 사 1:1~2:4, 살후 2장'}]},
+  {id:'mt',label:'제4과',question:'구약과 신약의 봉한 책과 계시',parts:[{key:'mt_4',label:'제목 및 성구',answer:'구약과 신약의 봉한 책과 계시 / 사 29장, 겔 3장, 계 5장, 계 10장'}]},
+  {id:'mt',label:'제5과',question:'언약을 지킨 자와 지키지 않은 자의 결과',parts:[{key:'mt_5',label:'제목 및 성구',answer:'언약을 지킨 자와 지키지 않은 자의 결과 / 신 28장(롬 31장, 히 8장, 계 7장)'}]},
+  {id:'mt',label:'제6과',question:'구약과 신약의 약속의 목자',parts:[{key:'mt_6',label:'제목 및 성구',answer:'구약과 신약의 약속의 목자 / 마 1장, 계 1:1~3, 계 2~3장, 계 10장, 계 22:16'}]},
+  {id:'mt',label:'제7과',question:'주기도문의 참뜻',parts:[{key:'mt_7',label:'제목 및 성구',answer:'주기도문의 참뜻 / 마 6장, 요 8장'}]},
+  {id:'mt',label:'제8과',question:'나라의 본 자손과 천국에 앉은 자',parts:[{key:'mt_8',label:'제목 및 성구',answer:'나라의 본 자손과 천국에 앉은 자 / 마 8:11~12(눅 13:28~30), 계 6~7장'}]},
+  {id:'mt',label:'제9과',question:'천국 비밀 두 가지 씨와 추수',parts:[{key:'mt_9',label:'제목 및 성구',answer:'천국 비밀 두 가지 씨와 추수 / 마 13장(계 14장)'}]},
+  {id:'mt',label:'제10과',question:'주 재림과 말세의 징조',parts:[{key:'mt_10',label:'제목 및 성구',answer:'주 재림과 말세의 징조 / 마 24장, 요 8장'}]},
+  {id:'mt',label:'제11과',question:'어린양의 혼인 잔치와 등과 기름',parts:[{key:'mt_11',label:'제목 및 성구',answer:'어린양의 혼인 잔치와 등과 기름 / 마 25장(마 22장, 눅 14장, 계 19장)'}]},
+  {id:'mt',label:'제12과',question:'피로 세운 예수님의 새 언약',parts:[{key:'mt_12',label:'제목 및 성구',answer:'피로 세운 예수님의 새 언약 / 눅 22장(계 5장, 계 7장)'}]},
+  {id:'mt',label:'제13과',question:'태초의 말씀과 거듭남',parts:[{key:'mt_13',label:'제목 및 성구',answer:'태초의 말씀과 거듭남 / 요 1장, 요 3장'}]},
+  {id:'mt',label:'제14과',question:'하나님의 목적',parts:[{key:'mt_14',label:'제목 및 성구',answer:'하나님의 목적 / 롬 31장, 마 13장, 눅 22장, 계 7장, 계 19장, 계 21장'}]},
+  {id:'mt',label:'제15과',question:'하나님의 양식과 사단의 양식',parts:[{key:'mt_15',label:'제목 및 성구',answer:'하나님의 양식과 사단의 양식 / 요 6장(계 2장, 계 17~18장)'}]},
+  {id:'mt',label:'제16과',question:'예수님이 예비하신 처소와 진리의 성령 보혜사',parts:[{key:'mt_16',label:'제목 및 성구',answer:'예수님이 예비하신 처소와 진리의 성령 보혜사 / 요 14장, 요 16장'}]},
+  {id:'mt',label:'제17과',question:'생명나무와 선악나무의 실체',parts:[{key:'mt_17',label:'제목 및 성구',answer:'생명나무와 선악나무의 실체 / 요 15장(창 2~3장, 단 4장, 계 22장)'}]},
+  {id:'mt',label:'제18과',question:'죄 사함을 이루는 예수님의 피의 효력',parts:[{key:'mt_18',label:'제목 및 성구',answer:'죄 사함을 이루는 예수님의 피의 효력 / 히 10장'}]},
+  {id:'mt',label:'제19과',question:'마지막 일곱째 나팔 소리',parts:[{key:'mt_19',label:'제목 및 성구',answer:'마지막 일곱째 나팔 소리 / 고전 15:51~54(계 10:7, 계 11:15)'}]},
+  {id:'mt',label:'제20과',question:'하나님의 유업을 받는 아들',parts:[{key:'mt_20',label:'제목 및 성구',answer:'하나님의 유업을 받는 아들 / 갈 4:1~7, 계 21:7'}]},
+  {id:'mt',label:'제21과',question:'핍박과 승리의 나라 신천지',parts:[{key:'mt_21',label:'제목 및 성구',answer:'핍박과 승리의 나라 신천지 / 요 8장(마 10장, 마 25장, 요 16장, 계 7장, 계 14장, 계 21장)'}]},
+  {id:'mt',label:'제22과',question:'지켜야 할 새 언약의 법',parts:[{key:'mt_22',label:'제목 및 성구',answer:'지켜야 할 새 언약의 법 / 히 8장'}]},
+  {id:'mt',label:'제23과',question:'도의 초보와 완전한 곳',parts:[{key:'mt_23',label:'제목 및 성구',answer:'도의 초보와 완전한 곳 / 히 5:12~14, 히 6:1~8'}]},
+  {id:'mt',label:'제24과',question:'하나님의 목적 천지 재창조',parts:[{key:'mt_24',label:'제목 및 성구',answer:'하나님의 목적 천지 재창조 / 마 6:10, 창 1:1~2:3, 계 21:1~7'}]},
+  {id:'mt',label:'제25과',question:'신천지예수교 증거장막성전',parts:[{key:'mt_25',label:'제목 및 성구',answer:'신천지예수교 증거장막성전 / 롬 31장, 마 13장, 눅 22장, 계 7장, 계 15:5, 계 21:1'}]},
+];
+
+// ── 고등 목차 ──
+const HIGH_TOC_ITEMS = [
+  {id:'ht',label:'개요',question:'요한계시록의 개요',parts:[{key:'ht_0',label:'제목',answer:'요한계시록의 개요'}]},
+  {id:'ht',label:'제1-1과',question:'계 1:1~8 — 계시록 전장의 요약과 결론',parts:[{key:'ht_1',label:'성경장 및 제목',answer:'계 1:1~8 — 계시록 전장의 요약과 결론'}]},
+  {id:'ht',label:'제1-2과',question:'계 1:9~20 — 계시록 사건의 시작과 일곱 별과 일곱 금 촛대의 비밀',parts:[{key:'ht_2',label:'성경장 및 제목',answer:'계 1:9~20 — 계시록 사건의 시작과 일곱 별과 일곱 금 촛대의 비밀'}]},
+  {id:'ht',label:'제2과',question:'계 2장 — 일곱 교회 사자에게 보낸 편지',parts:[{key:'ht_3',label:'성경장 및 제목',answer:'계 2장 — 일곱 교회 사자에게 보낸 편지'}]},
+  {id:'ht',label:'제3과',question:'계 3장 — 일곱 교회 사자에게 보낸 편지',parts:[{key:'ht_4',label:'성경장 및 제목',answer:'계 3장 — 일곱 교회 사자에게 보낸 편지'}]},
+  {id:'ht',label:'제4과',question:'계 4장 — 영계 하나님의 보좌와 계열',parts:[{key:'ht_5',label:'성경장 및 제목',answer:'계 4장 — 영계 하나님의 보좌와 계열'}]},
+  {id:'ht',label:'제5과',question:'계 5장 — 일곱 인으로 봉한 책',parts:[{key:'ht_6',label:'성경장 및 제목',answer:'계 5장 — 일곱 인으로 봉한 책'}]},
+  {id:'ht',label:'제6과',question:'계 6장 — 배도한 선천 해·달·별에 대한 심판',parts:[{key:'ht_7',label:'성경장 및 제목',answer:'계 6장 — 배도한 선천 해·달·별에 대한 심판'}]},
+  {id:'ht',label:'제7과',question:'계 7장 — 새 창조 된 영적 새 이스라엘 열두 지파',parts:[{key:'ht_8',label:'성경장 및 제목',answer:'계 7장 — 새 창조 된 영적 새 이스라엘 열두 지파'}]},
+  {id:'ht',label:'제8과',question:'계 8장 — 마지막 인과 일곱 나팔',parts:[{key:'ht_9',label:'성경장 및 제목',answer:'계 8장 — 마지막 인과 일곱 나팔'}]},
+  {id:'ht',label:'제9과',question:'계 9장 — 무저갱의 황충과 범죄한 천사',parts:[{key:'ht_10',label:'성경장 및 제목',answer:'계 9장 — 무저갱의 황충과 범죄한 천사'}]},
+  {id:'ht',label:'제10과',question:'계 10장 — 하늘에서 온 계시 책과 약속의 목자',parts:[{key:'ht_11',label:'성경장 및 제목',answer:'계 10장 — 하늘에서 온 계시 책과 약속의 목자'}]},
+  {id:'ht',label:'제11과',question:'계 11장 — 두 증인과 일곱째 나팔',parts:[{key:'ht_12',label:'성경장 및 제목',answer:'계 11장 — 두 증인과 일곱째 나팔'}]},
+  {id:'ht',label:'제12과',question:'계 12장 — 용과 하나님과의 전쟁',parts:[{key:'ht_13',label:'성경장 및 제목',answer:'계 12장 — 용과 하나님과의 전쟁'}]},
+  {id:'ht',label:'제13과',question:'계 13장 — 짐승에게 표 받고 배도한 선민',parts:[{key:'ht_14',label:'성경장 및 제목',answer:'계 13장 — 짐승에게 표 받고 배도한 선민'}]},
+  {id:'ht',label:'제14과',question:'계 14장 — 처음 익은 열매 시온산 십사만 사천',parts:[{key:'ht_15',label:'성경장 및 제목',answer:'계 14장 — 처음 익은 열매 시온산 십사만 사천'}]},
+  {id:'ht',label:'제15과',question:'계 15장 — 만국이 와서 경배할 증거장막 성전',parts:[{key:'ht_16',label:'성경장 및 제목',answer:'계 15장 — 만국이 와서 경배할 증거장막 성전'}]},
+  {id:'ht',label:'제16과',question:'계 16장 — 진노의 일곱 대접',parts:[{key:'ht_17',label:'성경장 및 제목',answer:'계 16장 — 진노의 일곱 대접'}]},
+  {id:'ht',label:'제17과',question:'계 17장 — 마귀의 양식 음행의 포도주',parts:[{key:'ht_18',label:'성경장 및 제목',answer:'계 17장 — 마귀의 양식 음행의 포도주'}]},
+  {id:'ht',label:'제18과',question:'계 18장 — 만국을 무너뜨린 사단과의 결혼',parts:[{key:'ht_19',label:'성경장 및 제목',answer:'계 18장 — 만국을 무너뜨린 사단과의 결혼'}]},
+  {id:'ht',label:'제19과',question:'계 19장 — 영육 어린양의 혼인 잔치',parts:[{key:'ht_20',label:'성경장 및 제목',answer:'계 19장 — 영육 어린양의 혼인 잔치'}]},
+  {id:'ht',label:'제20과',question:'계 20장 — 순교의 영과 산 자의 첫째 부활',parts:[{key:'ht_21',label:'성경장 및 제목',answer:'계 20장 — 순교의 영과 산 자의 첫째 부활'}]},
+  {id:'ht',label:'제21과',question:'계 21장 — 약속한 새 하늘 새 땅 신천지',parts:[{key:'ht_22',label:'성경장 및 제목',answer:'계 21장 — 약속한 새 하늘 새 땅 신천지'}]},
+  {id:'ht',label:'제22과',question:'계 22장 — 생명나무가 있는 거룩한 성',parts:[{key:'ht_23',label:'성경장 및 제목',answer:'계 22장 — 생명나무가 있는 거룩한 성'}]},
+];
+
+// ── 비유 퀴즈 ──
+// 비유 → 의미+성구 방향
+const PARABLE_ITEMS = [
+  {id:'pb',label:'비유(비사)',question:'비유(비사)의 뜻은?',parts:[{key:'pb_1',label:'뜻',answer:'실체 출현 전, 이를 감추시기 위해 비슷한 것으로 빗댄 것 (시 78:2)'}]},
+  {id:'pb',label:'씨',question:'씨의 비유 뜻은?',parts:[{key:'pb_2',label:'뜻 및 성구',answer:'말씀 (눅 8:11, 벤전 1:23) ※ 사단의 씨: 비진리 (요 8:44, 마 13:25)'}]},
+  {id:'pb',label:'밭',question:'밭의 비유 뜻은?',parts:[{key:'pb_3',label:'뜻 및 성구',answer:'사람의 마음 (눅 8:15, 고전 3:9), 세상 (마 13:38) [마 13:24의 제 밭: 예수교회 세상]'}]},
+  {id:'pb',label:'나무',question:'나무의 비유 뜻은?',parts:[{key:'pb_4',label:'뜻 및 성구',answer:'말씀의 씨로 거듭난 속사람(목자) (요 15:1)'}]},
+  {id:'pb',label:'가지',question:'가지의 비유 뜻은?',parts:[{key:'pb_5',label:'뜻 및 성구',answer:'제자 (요 15:5)'}]},
+  {id:'pb',label:'잎사귀',question:'잎사귀의 비유 뜻은?',parts:[{key:'pb_6',label:'뜻 및 성구',answer:'전도자 (겔 47:12, 계 22:2)'}]},
+  {id:'pb',label:'열매',question:'열매의 비유 뜻은?',parts:[{key:'pb_7',label:'뜻 및 성구',answer:'말씀, 말씀으로 맺은 성도 (약 1:18, 계 14:4)'}]},
+  {id:'pb',label:'새',question:'새의 비유 뜻은?',parts:[{key:'pb_8',label:'뜻 및 성구',answer:'영 (마 3:16, 계 19:17) ※ 사단의 새: 악령 (단 4:21, 계 18:2)'}]},
+  {id:'pb',label:'양식',question:'양식의 비유 뜻은?',parts:[{key:'pb_9',label:'뜻 및 성구',answer:'말씀 (요 6:27, 사 55:1~2, 암 8:11) ※ 사단의 양식: 비진리 (잠 4:17, 말 1:7, 사 28:7~8)'}]},
+  {id:'pb',label:'누룩',question:'누룩의 비유 뜻은?',parts:[{key:'pb_10',label:'뜻 및 성구',answer:'교훈 (마 13:33) ※ 사단의 누룩: 사단의 교훈 (마 16:6~12) [부풀게 된 것: 변화된 믿음]'}]},
+  {id:'pb',label:'그릇',question:'그릇의 비유 뜻은?',parts:[{key:'pb_11',label:'뜻 및 성구',answer:'사람, 교회 (행 9:15, 마 13:47~48)'}]},
+  {id:'pb',label:'저울',question:'저울의 비유 뜻은?',parts:[{key:'pb_12',label:'뜻 및 성구',answer:'말씀 (잠 24:12) ※ 사단의 저울: 사단의 말(비진리) (잠 11:1)'}]},
+  {id:'pb',label:'지팡이',question:'지팡이의 비유 뜻은?',parts:[{key:'pb_13',label:'뜻 및 성구',answer:'말씀과 사람 (사 11:4, 시 89:32)'}]},
+  {id:'pb',label:'철장',question:'철장의 비유 뜻은?',parts:[{key:'pb_14',label:'뜻 및 성구',answer:'다스리는 교권 (시 2:6~9, 계 2:26~27)'}]},
+  {id:'pb',label:'불',question:'불의 비유 뜻은?',parts:[{key:'pb_15',label:'뜻 및 성구',answer:'말씀 (렘 5:14, 렘 23:29)'}]},
+  {id:'pb',label:'향로 / 향 / 향연',question:'향로 / 향 / 향연의 비유 뜻은?',parts:[{key:'pb_16',label:'뜻 및 성구',answer:'사람 (계 8:3) / 성도의 기도 (계 5:8) / 기도 상달 (계 8:3~4)'}]},
+  {id:'pb',label:'가마',question:'가마의 비유 뜻은?',parts:[{key:'pb_17',label:'뜻 및 성구',answer:'교회 (슥 14:20~21)'}]},
+  {id:'pb',label:'빛 / 어두움',question:'빛 / 어두움의 비유 뜻은?',parts:[{key:'pb_18',label:'뜻 및 성구',answer:'생명의 말씀 (요 1:1~5, 잠전 5:1~6) / 말씀이 없는 무지 (요 12:35)'}]},
+  {id:'pb',label:'등대(촛대)·눈',question:'등대(촛대)·눈의 비유 뜻은?',parts:[{key:'pb_19',label:'뜻 및 성구',answer:'영과 사명자 (계 4:5, 계 5:6)'}]},
+  {id:'pb',label:'소경',question:'소경의 비유 뜻은?',parts:[{key:'pb_20',label:'뜻 및 성구',answer:'말씀을 보아도 깨닫지 못하는 자 (계 3:17~18, 사 42:18~20)'}]},
+  {id:'pb',label:'귀머거리',question:'귀머거리의 비유 뜻은?',parts:[{key:'pb_21',label:'뜻 및 성구',answer:'말씀을 들어도 깨닫지 못하는 자 (사 42:18~20)'}]},
+  {id:'pb',label:'옷 / 예복',question:'옷 / 예복의 비유 뜻은?',parts:[{key:'pb_22',label:'뜻 및 성구',answer:'마음, 행실, 교리 (계 22:14, 계 19:13) / 옳은 행실 (계 19:8) ※ 음녀의 옷: 거짓 교리 (계 17:4)'}]},
+  {id:'pb',label:'보물',question:'보물의 비유 뜻은?',parts:[{key:'pb_23',label:'뜻 및 성구',answer:'말씀 (잠 16:16)'}]},
+  {id:'pb',label:'부자',question:'부자의 비유 뜻은?',parts:[{key:'pb_24',label:'뜻 및 성구',answer:'말씀(지식)이 많은 사람 (계 3:17~18)'}]},
+  {id:'pb',label:'물',question:'물의 비유 뜻은?',parts:[{key:'pb_25',label:'뜻 및 성구',answer:'말씀 (신 32:2, 요 15:3)'}]},
+  {id:'pb',label:'샘',question:'샘의 비유 뜻은?',parts:[{key:'pb_26',label:'뜻 및 성구',answer:'목자와 성전(교회) (슥 13:1, 계 7:17)'}]},
+  {id:'pb',label:'강',question:'강의 비유 뜻은?',parts:[{key:'pb_27',label:'뜻 및 성구',answer:'제자와 전도자의 마음 (요 7:37~38, 계 22:1~2)'}]},
+  {id:'pb',label:'바다',question:'바다의 비유 뜻은?',parts:[{key:'pb_28',label:'뜻 및 성구',answer:'세상 (단 7:3, 17)'}]},
+  {id:'pb',label:'어부 / 그물 / 고기',question:'어부 / 그물 / 고기의 비유 뜻은?',parts:[{key:'pb_29',label:'뜻 및 성구',answer:'목자(전도자) / 말씀 / 사람 (마 13:47~50, 마 4:18~20)'}]},
+  {id:'pb',label:'배',question:'배의 비유 뜻은?',parts:[{key:'pb_30',label:'뜻 및 성구',answer:'교회와 같은 조직체 (계 8:8~9, 계 18:17~19)'}]},
+  {id:'pb',label:'짐승',question:'짐승의 비유 뜻은?',parts:[{key:'pb_31',label:'뜻 및 성구',answer:'거짓 목자 (시 49:20) [예언서의 짐승: 세 종류의 사람 (배도자, 멸망자, 구원자와 소속 사람)]'}]},
+  {id:'pb',label:'머리',question:'머리의 비유 뜻은?',parts:[{key:'pb_32',label:'뜻 및 성구',answer:'우두머리(목자) (사 29:10, 엡 4:15)'}]},
+  {id:'pb',label:'뿔',question:'뿔의 비유 뜻은?',parts:[{key:'pb_33',label:'뜻 및 성구',answer:'머리에 속해서 싸우는 권세자(장로) (계 5:6, 계 17:12)'}]},
+  {id:'pb',label:'꼬리',question:'꼬리의 비유 뜻은?',parts:[{key:'pb_34',label:'뜻 및 성구',answer:'거짓 선지자 (사 9:15)'}]},
+  {id:'pb',label:'어린 양',question:'어린 양의 비유 뜻은?',parts:[{key:'pb_35',label:'뜻 및 성구',answer:'예수님 (요 1:29)'}]},
+  {id:'pb',label:'어린 양의 피와 살',question:'어린 양의 피와 살의 비유 뜻은?',parts:[{key:'pb_36',label:'뜻 및 성구',answer:'예수님의 생명의 말씀 (요 6:51~58)'}]},
+  {id:'pb',label:'새 포도주',question:'새 포도주의 비유 뜻은?',parts:[{key:'pb_37',label:'뜻 및 성구',answer:'새 계시 말씀 (사 25:6~8, 눅 5:37~38, 계 6:6) ※ 사단의 포도주: 거짓 교리 (신 32:32~33)'}]},
+  {id:'pb',label:'새 부대',question:'새 부대의 비유 뜻은?',parts:[{key:'pb_38',label:'뜻 및 성구',answer:'새 목자와 제자들 (눅 5:37~39, 행 9:15)'}]},
+  {id:'pb',label:'감람유',question:'감람유의 비유 뜻은?',parts:[{key:'pb_39',label:'뜻 및 성구',answer:'증인의 증거의 말씀 (슥 4:11~14, 계 11:3~4)'}]},
+  {id:'pb',label:'산',question:'산의 비유 뜻은?',parts:[{key:'pb_40',label:'뜻 및 성구',answer:'교회, 성전 (사 2:2~3, 계 14:1~3) [세 종류: 배도의 산, 멸망의 산, 구원의 산]'}]},
+  {id:'pb',label:'돌',question:'돌의 비유 뜻은?',parts:[{key:'pb_41',label:'뜻 및 성구',answer:'심판의 말씀, 심판권을 받은 목자 (마 21:42~46, 벤전 2:4~8)'}]},
+  {id:'pb',label:'우상',question:'우상의 비유 뜻은?',parts:[{key:'pb_42',label:'뜻 및 성구',answer:'거짓 스승(목자) (합 2:18)'}]},
+  {id:'pb',label:'인(표)',question:'인(표)의 비유 뜻은?',parts:[{key:'pb_43',label:'뜻 및 성구',answer:'하나님의 말씀 (요 1:1, 요 3:31~34) ※ 사단의 인(표): 비진리의 말 (딤전 4:1~2)'}]},
+  {id:'pb',label:'나팔 소리',question:'나팔 소리의 비유 뜻은?',parts:[{key:'pb_44',label:'뜻 및 성구',answer:'알리는 말씀 (사 58:1, 사 18:3) [나팔수: 영 (계 8:2) / 나팔: 사람 (계 8:2)]'}]},
+  {id:'pb',label:'노래',question:'노래의 비유 뜻은?',parts:[{key:'pb_45',label:'뜻 및 성구',answer:'설교 말씀 [모세의 노래: 구약 성경의 말씀 / 어린양의 노래: 신약 성경의 말씀 / 새 노래: 계시록이 성취된 실상의 말씀 (계 14:3)]'}]},
+  {id:'pb',label:'네 생물',question:'네 생물의 비유 뜻은?',parts:[{key:'pb_46',label:'뜻 및 성구',answer:'네 천사장 (계 4:6~8)'}]},
+  {id:'pb',label:'바람',question:'바람의 비유 뜻은?',parts:[{key:'pb_47',label:'뜻 및 성구',answer:'천사와 심판 (단 7:2, 히 1:7, 계 6:12~13) [바람이 분다: 천사를 통한 심판 / 바람을 붙잡는다: 천사를 통한 심판 중지]'}]},
+  {id:'pb',label:'생기',question:'생기의 비유 뜻은?',parts:[{key:'pb_48',label:'뜻 및 성구',answer:'생명의 말씀 (창 2:7, 요 6:63)'}]},
+  {id:'pb',label:'죽음',question:'죽음의 비유 뜻은?',parts:[{key:'pb_49',label:'뜻 및 성구',answer:'생명의 말씀이 없는 상태 (겔 18:4)'}]},
+  {id:'pb',label:'무덤',question:'무덤의 비유 뜻은?',parts:[{key:'pb_50',label:'뜻 및 성구',answer:'비진리의 조직체 (마 23:27~28)'}]},
+  {id:'pb',label:'부활',question:'부활의 비유 뜻은?',parts:[{key:'pb_51',label:'뜻 및 성구',answer:'생명의 말씀으로 다시 산 것 (요 5:24~29)'}]},
+  {id:'pb',label:'신랑',question:'신랑의 비유 뜻은?',parts:[{key:'pb_52',label:'뜻 및 성구',answer:'영 (호 2:19~20)'}]},
+  {id:'pb',label:'신부',question:'신부의 비유 뜻은?',parts:[{key:'pb_53',label:'뜻 및 성구',answer:'육 (호 2:19~20) [예수님의 아내(신부): 계 19:7~9, 계 22:16~17]'}]},
+  {id:'pb',label:'과부',question:'과부의 비유 뜻은?',parts:[{key:'pb_54',label:'뜻 및 성구',answer:'배도한 목자 (애 5:3)'}]},
+  {id:'pb',label:'고아',question:'고아의 비유 뜻은?',parts:[{key:'pb_55',label:'뜻 및 성구',answer:'배도한 목자 소속 교인 (애 5:3)'}]},
+  {id:'pb',label:'예루살렘',question:'예루살렘의 비유 뜻은?',parts:[{key:'pb_56',label:'뜻 및 성구',answer:'선민의 교단 (마 24:1~2, 눅 21:20~21) [(육계) 새 예루살렘: 롬 3:17, 슥 8:3]'}]},
+  {id:'pb',label:'바벨론',question:'바벨론의 비유 뜻은?',parts:[{key:'pb_57',label:'뜻 및 성구',answer:'이방 귀신의 교단 (계 17:5, 계 18:2~4)'}]},
+  {id:'pb',label:'전쟁',question:'전쟁의 비유 뜻은?',parts:[{key:'pb_58',label:'뜻 및 성구',answer:'교리 싸움 (마 24:7~8, 엡 6:12)'}]},
+  {id:'pb',label:'병기(兵器)',question:'병기(兵器)의 비유 뜻은?',parts:[{key:'pb_59',label:'뜻 및 성구',answer:'증거의 말 (계 12:11, 엡 6:17)'}]},
+  {id:'pb',label:'하늘',question:'하늘의 비유 뜻은?',parts:[{key:'pb_60',label:'뜻 및 성구',answer:'선민의 장막 (창 37:9~11, 계 13:6) [새 하늘: 계 15:5, 계 21:1]'}]},
+  {id:'pb',label:'땅',question:'땅의 비유 뜻은?',parts:[{key:'pb_61',label:'뜻 및 성구',answer:'백성(성도) (계 13:3) [사 1:2의 하늘과 땅: 영들과 육체]'}]},
+  {id:'pb',label:'해·달·별',question:'해·달·별의 비유 뜻은?',parts:[{key:'pb_62',label:'뜻 및 성구',answer:'목자·전도자·성도 (창 37:9~11, 마 24:29, 계 6:12~13)'}]},
+  {id:'pb',label:'이스라엘',question:'이스라엘의 비유 뜻은?',parts:[{key:'pb_63',label:'뜻 및 성구',answer:'이긴 자, 선민 (창 32:28, 요 16:33, 계 2~3장)'}]},
+  {id:'pb',label:'천국',question:'천국의 비유 뜻은?',parts:[{key:'pb_64',label:'뜻 및 성구',answer:'① 영계의 천국 (계 4:1~8, 계 21:2, 10) ② 먼저 택한 선민의 장막 천국 (계 13:6) ③ 재창조된 인 맞은 12지파 (계 7장, 계 14장)'}]},
+  {id:'pb',label:'열쇠',question:'열쇠의 비유 뜻은?',parts:[{key:'pb_65',label:'뜻 및 성구',answer:'비밀을 아는 지혜 (눅 11:52, 계 1:18)'}]},
+];
+
+// ── CFG 등록 ──
+function makeCfg(areaId, chkId, items){
+  return {areaId, chkSpaceId:chkId, items};
+}
+
+const CFG_EE = makeCfg('area-elem-exam','chk-ee', ELEM_EXAM_ITEMS);
+const CFG_ME = makeCfg('area-mid-exam','chk-me', MID_EXAM_ITEMS);
+const CFG_ET = makeCfg('area-elem-toc','chk-et', ELEM_TOC_ITEMS);
+const CFG_MT = makeCfg('area-mid-toc','chk-mt', MID_TOC_ITEMS);
+const CFG_HT = makeCfg('area-high-toc','chk-ht', HIGH_TOC_ITEMS);
+const CFG_PB = makeCfg('area-parable','chk-pb', PARABLE_ITEMS);
+
+CFG_MAP['area-elem-exam']=CFG_EE;
+CFG_MAP['area-mid-exam']=CFG_ME;
+CFG_MAP['area-elem-toc']=CFG_ET;
+CFG_MAP['area-mid-toc']=CFG_MT;
+CFG_MAP['area-high-toc']=CFG_HT;
+CFG_MAP['area-parable']=CFG_PB;
+
+function initAll(){
+  [CFG_EE,CFG_ME,CFG_ET,CFG_MT,CFG_HT,CFG_PB].forEach(cfg=>{
+    initSection(cfg);
+    renderSection(cfg);
+  });
+}
+</script>
+</body>
+</html>
